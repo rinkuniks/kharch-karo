@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { trackVisit } from "@/lib/geolocation";
 import { BudgetSelector } from "@/components/BudgetSelector";
 import { CartDrawer } from "@/components/CartDrawer";
 import { DailyChallenge } from "@/components/DailyChallenge";
@@ -25,6 +26,7 @@ import { track } from "@/lib/analytics";
 export function KharchApp() {
   useEffect(() => {
     track("landing_view");
+    trackVisit(); // track visitor location
   }, []);
 
   return (
@@ -99,6 +101,12 @@ export function KharchApp() {
                 <p className="text-xs text-ink-secondary">
                   Spend like nobody&apos;s watching. No real money. No real regrets.
                 </p>
+                <a
+                  href="/admin"
+                  className="mt-2 rounded-full border border-line-strong px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-secondary transition-colors hover:border-accent hover:text-accent"
+                >
+                  📊 Analytics
+                </a>
                 <a
                   href="/demo/kharch-karo-demo.mp4"
                   target="_blank"
