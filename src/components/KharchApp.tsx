@@ -99,6 +99,14 @@ export function KharchApp() {
                 <p className="text-xs text-ink-secondary">
                   Spend like nobody&apos;s watching. No real money. No real regrets.
                 </p>
+                <a
+                  href="/demo/kharch-karo-demo.mp4"
+                  target="_blank"
+                  rel="noopener"
+                  className="mt-2 rounded-full border border-line-strong px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-secondary transition-colors hover:border-accent hover:text-accent"
+                >
+                  ▶ Watch the demo
+                </a>
                 <p className="mt-2 max-w-md text-[11px] leading-relaxed text-ink-muted">
                   Kharch Karo is a virtual entertainment experience. No real purchases are
                   made through the game.
