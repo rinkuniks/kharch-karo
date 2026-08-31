@@ -8,7 +8,7 @@ import { formatINR } from "@/lib/format";
 
 /** Cart drawer — "YOUR COLLECTION" (design.md §18) + early session finish (plan §52.8). */
 export function CartDrawer() {
-  const { cartOpen, setCartOpen, purchases, spent, total, remaining, finishSession } =
+  const { cartOpen, setCartOpen, purchases, spent, total, remaining, finishSession, removeFromWallet } =
     useWallet();
   const animatedSpent = useAnimatedNumber(spent, 500);
 
@@ -45,7 +45,7 @@ export function CartDrawer() {
             {purchases.map((p) => (
               <li
                 key={p.id}
-                className="flex items-center gap-3 rounded-2xl bg-white/[0.03] px-4 py-3"
+                className="group flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 transition-all duration-200 hover:border-line-strong hover:bg-surface-elevated"
               >
                 <span aria-hidden className="text-xl">
                   {p.emoji}
@@ -61,6 +61,16 @@ export function CartDrawer() {
                 <span className="font-display text-sm font-bold text-ink-secondary tabular-nums">
                   −{formatINR(p.price * p.qty)}
                 </span>
+                <button
+                  type="button"
+                  onClick={() => removeFromWallet(p.id)}
+                  aria-label={`Remove ${p.name} from collection`}
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-ink-muted opacity-0 transition-all duration-200 hover:bg-error/10 hover:text-error group-hover:opacity-100"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
+                    <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  </svg>
+                </button>
               </li>
             ))}
           </ul>

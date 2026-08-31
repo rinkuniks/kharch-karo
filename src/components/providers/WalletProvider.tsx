@@ -45,6 +45,7 @@ interface WalletContextValue {
   selectBudget: (value: string) => void;
   selectCustom: (amount: number) => void;
   addToWallet: (product: Product, qty?: number) => boolean;
+  removeFromWallet: (purchaseId: string) => void;
   finishSession: () => void;
   dismissDamage: () => void;
   reset: () => void;
@@ -165,6 +166,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     [remaining]
   );
 
+  const removeFromWallet = useCallback((purchaseId: string) => {
+    setPurchases((prev) => prev.filter((p) => p.id !== purchaseId));
+  }, []);
+
   /* ---- PROVIDER VALUE APPENDED BELOW ---- */
 
   const reset = useCallback(() => clearSession(), [clearSession]);
@@ -199,6 +204,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       selectBudget,
       selectCustom,
       addToWallet,
+      removeFromWallet,
       finishSession: () => setFinished(true),
       dismissDamage: () => setFinished(false),
       reset,
@@ -223,6 +229,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       selectBudget,
       selectCustom,
       addToWallet,
+      removeFromWallet,
       reset,
       restartWithCr,
     ]
