@@ -32,6 +32,28 @@
   --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ============================================================
+   LIGHT MODE — data-theme="light"
+   ============================================================ */
+
+[data-theme="light"] {
+  --color-bg: #f5f7fa;
+  --color-bg-secondary: #e8ecf1;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-ink: #0a0a0c;
+  --color-ink-secondary: #3a3f47;
+  --color-ink-muted: #6b7280;
+  --color-accent: #6b4fe6;
+  --color-accent-secondary: #00a8cc;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-line: rgb(0 0 0 / 0.08);
+  --color-line-strong: rgb(0 0 0 / 0.14);
+  --color-glass: rgb(0 0 0 / 0.025);
+}
+
 /* ---------- Base ---------- */
 
 html {
@@ -71,6 +93,13 @@ body {
   background: #2a323c;
 }
 
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #c4ccd6;
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: #aab2bd;
+}
+
 /* ---------- Ambient background layers — design.md §8 ---------- */
 
 .bg-grid {
@@ -78,6 +107,12 @@ body {
     linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
   background-size: 64px 64px;
+}
+
+[data-theme="light"] .bg-grid {
+  background-image:
+    linear-gradient(rgb(0 0 0 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 0 0 / 0.04) 1px, transparent 1px);
 }
 
 .bg-noise {
@@ -93,11 +128,21 @@ body {
   -webkit-backdrop-filter: blur(20px);
 }
 
+[data-theme="light"] .glass {
+  background: rgb(255 255 255 / 0.72);
+  border: 1px solid rgb(0 0 0 / 0.08);
+}
+
 .glass-strong {
   background: rgb(10 10 12 / 0.82);
   border: 1px solid rgb(255 255 255 / 0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+}
+
+[data-theme="light"] .glass-strong {
+  background: rgb(255 255 255 / 0.88);
+  border: 1px solid rgb(0 0 0 / 0.08);
 }
 
 /* ---------- Glow & gradient accents ---------- */
