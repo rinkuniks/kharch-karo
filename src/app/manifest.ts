@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 /** PWA manifest — plan §47 (installable, app-like experience). */
 export default function manifest(): MetadataRoute.Manifest {
   return {

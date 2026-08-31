@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 
+export const dynamic = "force-static";
+
 /** Branded OpenGraph card for link previews — plan §11/§23 shareable results. */
 export const alt = "Kharch Karo — Spend your dream money";
 export const size = { width: 1200, height: 630 };

@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 
+export const dynamic = "force-static";
+
 /** App icon (512×512) — PWA + favicon, plan §47. */
 export const size = { width: 512, height: 512 };
 export const contentType = "image/png";

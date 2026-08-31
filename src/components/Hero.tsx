@@ -10,7 +10,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-20"
+      className="relative flex min-h-[100svh] items-center overflow-hidden pt-40 pb-20"
     >
       {/* Ambient background — design.md §8: purple 0.20 / cyan 0.12 radial gradients + grid */}
       <div aria-hidden className="pointer-events-none absolute inset-0">

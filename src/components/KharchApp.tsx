@@ -71,7 +71,7 @@ export function KharchApp() {
               <SpendingExperience />
             </Reveal>
 
-            <aside className="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start">
+            <aside className="flex flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
               <Reveal>
                 <WalletDisplay />
               </Reveal>
