@@ -30,7 +30,7 @@ export function Hero() {
           </p>
 
           <h1
-            className="hero-rise mt-6 font-display text-[42px] leading-[1.02] font-bold tracking-tight text-ink sm:text-6xl lg:text-7xl"
+            className="hero-rise mt-6 font-display text-3xl leading-[1.05] font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl xl:text-7xl"
             style={{ animationDelay: "350ms" }}
           >
             What would you do with{" "}

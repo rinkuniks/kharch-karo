@@ -73,7 +73,7 @@ export function DailyChallenge() {
 
       <p
         className={cn(
-          "mt-4 font-display text-5xl font-bold tracking-tight tabular-nums",
+          "mt-4 font-display text-4xl font-bold tracking-tight tabular-nums sm:text-5xl",
           expired ? "text-ink-muted" : "text-ink"
         )}
       >

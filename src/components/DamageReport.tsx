@@ -58,16 +58,16 @@ export function DamageReport() {
       role="dialog"
       aria-modal="true"
       aria-label="Damage report"
-      className="fade-scale-in fixed inset-0 z-60 flex items-center justify-center overflow-y-auto bg-bg/95 px-4 py-16 backdrop-blur-xl"
+      className="fade-scale-in fixed inset-0 z-60 flex items-start justify-center overflow-y-auto bg-bg/95 px-4 py-8 backdrop-blur-xl sm:items-center sm:py-16"
     >
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-lg py-4">
         <div className="text-center">
           {canDismissDamage && (
             <button
               type="button"
               onClick={dismissDamage}
               aria-label="Back to spending"
-              className="absolute top-6 right-6 flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink-secondary transition-colors hover:border-line-strong hover:text-ink"
+              className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-line bg-bg/80 text-ink-secondary backdrop-blur-sm transition-colors hover:border-line-strong hover:text-ink sm:top-6 sm:right-6"
             >
               ✕
             </button>
@@ -78,7 +78,7 @@ export function DamageReport() {
           <div className="mt-5 text-7xl" aria-hidden>
             {pct >= 98 ? "💀" : "🧾"}
           </div>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-ink sm:text-5xl">
             {pct >= 98 ? "You're broke." : "Nice damage."}
           </h2>
 

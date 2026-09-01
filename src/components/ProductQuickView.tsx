@@ -48,7 +48,7 @@ export function ProductQuickView() {
     <Modal open onClose={closeQuickView} label={`Quick view ${product.name}`}>
       <div className="grid sm:grid-cols-2">
         <div
-          className="relative flex h-56 items-center justify-center sm:h-full sm:min-h-80"
+          className="relative flex h-48 items-center justify-center sm:h-full sm:min-h-80"
           style={{
             background: `radial-gradient(120% 120% at 50% 10%, ${product.gradient[0]}, ${product.gradient[1]})`,
           }}

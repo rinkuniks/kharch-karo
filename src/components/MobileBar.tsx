@@ -12,7 +12,7 @@ export function MobileBar() {
   const animatedRemaining = useAnimatedNumber(remaining, 500);
 
   return (
-    <div className="glass-strong fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-line px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden">
+    <div className="glass-strong fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-line px-4 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] lg:hidden">
       <div>
         <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-ink-muted">
           Left to burn

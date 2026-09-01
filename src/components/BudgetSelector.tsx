@@ -27,7 +27,7 @@ export function BudgetSelector() {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
+    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0 lg:grid-cols-7">
       {BUDGETS.map((option) => {
         const active = !isCustom && option.value === budget;
         return (
@@ -40,7 +40,7 @@ export function BudgetSelector() {
             }}
             aria-pressed={active}
             className={cn(
-              "rounded-2xl border px-4 py-4 text-left transition-all duration-300 ease-cinematic",
+              "w-[7.5rem] shrink-0 rounded-2xl border px-4 py-4 text-left transition-all duration-300 ease-cinematic sm:w-auto",
               active
                 ? "glow-purple border-accent bg-accent/10"
                 : "border-line bg-glass hover:border-line-strong hover:bg-white/[0.07]"
@@ -64,7 +64,7 @@ export function BudgetSelector() {
       {/* Custom fantasy budget — plan §5 "Enter your fantasy budget" */}
       <div
         className={cn(
-          "rounded-2xl border px-4 py-4 transition-all duration-300 ease-cinematic",
+          "w-[7.5rem] shrink-0 rounded-2xl border px-4 py-4 transition-all duration-300 ease-cinematic sm:w-auto",
           isCustom
             ? "glow-purple border-accent bg-accent/10"
             : "border-dashed border-line-strong bg-glass hover:bg-white/[0.07]"

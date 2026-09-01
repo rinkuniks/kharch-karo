@@ -38,11 +38,11 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:px-4 sm:pt-4">
       <nav
         className={cn(
-          "glass-strong flex w-full max-w-5xl items-center justify-between gap-3 rounded-full transition-all duration-500 ease-cinematic",
-          scrolled ? "px-4 py-2" : "px-5 py-3"
+          "glass-strong flex w-full max-w-5xl items-center justify-between gap-2 rounded-full transition-all duration-500 ease-cinematic sm:gap-3",
+          scrolled ? "px-3 py-1.5 sm:px-4 sm:py-2" : "px-4 py-2 sm:px-5 sm:py-3"
         )}
       >
         <a
@@ -90,7 +90,7 @@ export function Navbar() {
             type="button"
             onClick={() => setSearchOpen(true)}
             aria-label="Search products"
-            className="flex h-10 items-center gap-2 rounded-full border border-line bg-white/5 px-3 text-ink-secondary transition-colors hover:border-line-strong hover:text-ink"
+            className="flex h-9 items-center gap-2 rounded-full border border-line bg-white/5 px-3 text-ink-secondary transition-colors hover:border-line-strong hover:text-ink sm:h-10"
           >
             <SearchIcon className="h-4 w-4" />
             <kbd className="hidden rounded border border-line-strong px-1.5 text-[10px] font-semibold lg:inline">
@@ -102,7 +102,7 @@ export function Navbar() {
             type="button"
             onClick={() => setCartOpen(true)}
             aria-label={`Your collection, ${purchases.length} items`}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white/5 text-ink-secondary transition-colors hover:border-line-strong hover:text-ink"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/5 text-ink-secondary transition-colors hover:border-line-strong hover:text-ink sm:h-10"
           >
             <BagIcon className="h-4 w-4" />
             {purchases.length > 0 && (

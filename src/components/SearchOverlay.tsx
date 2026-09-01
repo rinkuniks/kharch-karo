@@ -81,7 +81,7 @@ export function SearchOverlay() {
   /* ---- OVERLAY JSX APPENDED BELOW ---- */
 
   return (
-    <div className="fixed inset-0 z-85 flex items-start justify-center bg-bg/90 px-4 pt-24 pb-8 backdrop-blur-xl">
+    <div className="fixed inset-0 z-85 flex items-start justify-center bg-bg/90 px-4 pt-20 pb-8 backdrop-blur-xl sm:pt-24">
       <button
         type="button"
         aria-label="Close search"
@@ -110,7 +110,7 @@ export function SearchOverlay() {
           </kbd>
         </div>
 
-        <div className="mt-4 max-h-[65svh] overflow-y-auto rounded-2xl">
+        <div className="mt-4 max-h-[70svh] overflow-y-auto rounded-2xl sm:max-h-[65svh]">
           {!q && (
             <div className="mb-3 flex flex-wrap items-center gap-2 px-1">
               <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-ink-muted">

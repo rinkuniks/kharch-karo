@@ -44,7 +44,7 @@ export function ProductTile({ product }: { product: Product }) {
         type="button"
         onClick={() => openQuickView(product)}
         aria-label={`Quick view ${product.name}`}
-        className="product-visual relative flex h-44 w-full cursor-pointer items-center justify-center"
+        className="product-visual relative flex h-36 w-full cursor-pointer items-center justify-center sm:h-44"
         style={{
           background: `radial-gradient(120% 120% at 50% 10%, ${product.gradient[0]}, ${product.gradient[1]})`,
         }}

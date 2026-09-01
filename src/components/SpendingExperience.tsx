@@ -32,7 +32,7 @@ export function SpendingExperience() {
   return (
     <section id="spend" className="scroll-mt-28" aria-label="Spending experience">
       {/* Category discovery — design.md §12 large typographic list */}
-      <div className="mb-8 flex flex-wrap items-baseline gap-x-6 gap-y-3">
+      <div className="mb-8 flex items-baseline gap-x-6 gap-y-3 overflow-x-auto pb-2 scrollbar-hide">
         <h2 className="font-display text-2xl font-bold tracking-tight text-ink">
           The Collection
         </h2>
