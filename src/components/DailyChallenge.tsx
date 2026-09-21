@@ -19,33 +19,38 @@ const CHALLENGES: Challenge[] = [
 
 /** Daily challenge card with a real countdown (fixed from the old broken timer). */
 export function DailyChallenge() {
-  const [index, setIndex] = useState(0);
-  const [running, setRunning] = useState(false);
+  const [index] = useState(0);
   const [left, setLeft] = useState(CHALLENGES[0].seconds);
+  const [running, setRunning] = useState(false);
   const [expired, setExpired] = useState(false);
+  /** Absolute end timestamp for the active run (null = never started). */
+  const [endsAt, setEndsAt] = useState<number | null>(null);
 
   const challenge = CHALLENGES[index];
+  const totalSeconds = challenge.seconds;
 
+  // Every setState + time read happens inside the interval callback, so rendering
+  // stays pure and no state is synchronised from an effect body.
   useEffect(() => {
-    if (!running) return;
-    const interval = setInterval(() => {
-      setLeft((prev) => Math.max(0, prev - 1));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [running]);
-
-  useEffect(() => {
-    if (running && left === 0) {
-      setRunning(false);
-      setExpired(true);
-    }
-  }, [running, left]);
+    if (endsAt === null) return;
+    const id = setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+      setLeft(remaining);
+      if (remaining === 0) {
+        clearInterval(id);
+        setRunning(false);
+        setExpired(true);
+      }
+    }, 250);
+    return () => clearInterval(id);
+  }, [endsAt]);
 
   const start = () => {
     track("challenge_started", { challengeId: challenge.id });
-    setExpired(false);
-    setLeft(challenge.seconds);
+    setLeft(totalSeconds);
     setRunning(true);
+    setExpired(false);
+    setEndsAt(Date.now() + totalSeconds * 1000);
   };
 
   const mm = String(Math.floor(left / 60)).padStart(2, "0");

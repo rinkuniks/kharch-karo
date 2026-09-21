@@ -1,6 +1,7 @@
 "use client";
 
 import { useWallet } from "@/components/providers/WalletProvider";
+import { ProductImage } from "@/components/ProductImage";
 import { useToast, isBigPurchase } from "@/components/ui/toast";
 import { track } from "@/lib/analytics";
 import { formatINR } from "@/lib/format";
@@ -44,17 +45,9 @@ export function ProductTile({ product }: { product: Product }) {
         type="button"
         onClick={() => openQuickView(product)}
         aria-label={`Quick view ${product.name}`}
-        className="product-visual relative flex h-36 w-full cursor-pointer items-center justify-center sm:h-44"
-        style={{
-          background: `radial-gradient(120% 120% at 50% 10%, ${product.gradient[0]}, ${product.gradient[1]})`,
-        }}
+        className="product-visual relative block h-44 w-full cursor-pointer overflow-hidden sm:h-52"
       >
-        <span
-          aria-hidden
-          className="text-6xl drop-shadow-[0_8px_24px_rgb(0_0_0/0.45)] transition-transform duration-500 ease-cinematic group-hover:scale-110"
-        >
-          {product.emoji}
-        </span>
+        <ProductImage product={product} className="h-full w-full" />
         <span className="absolute top-4 left-4 rounded-full border border-line-strong bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-secondary">
           {product.category}
         </span>

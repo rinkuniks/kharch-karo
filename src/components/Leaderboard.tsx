@@ -1,18 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { formatINR } from "@/lib/format";
-import { LEADERBOARD_ENTRIES, MEDALS } from "@/lib/leaderboard";
+import { LEADERBOARD_ENTRIES, MEDALS, fetchLeaderboard, type LeaderboardEntry } from "@/lib/leaderboard";
 
-/** Top spenders wall — plan §14; medals via explicit tokens (no dynamic Tailwind class names). */
+/** Top spenders wall — live from Firestore, seed fallback offline (plan §14). */
 export function Leaderboard() {
+  const [entries, setEntries] = useState<LeaderboardEntry[]>(LEADERBOARD_ENTRIES);
+  const [live, setLive] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchLeaderboard(5).then((rows) => {
+      if (cancelled) return;
+      // If Firestore returned real docs (ids differ from seed), mark live.
+      const isLive = rows.some((r) => !r.id.startsWith("e"));
+      setEntries(rows);
+      setLive(isLive);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section aria-label="Leaderboard" className="glass rounded-3xl p-6">
-      <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-accent-secondary">
-        Top spenders today
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-accent-secondary">
+          Top spenders today
+        </p>
+        <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-muted">
+          {live ? "● Live" : "Demo"}
+        </span>
+      </div>
 
       <ol className="mt-4 space-y-3">
-        {LEADERBOARD_ENTRIES.map((entry, i) => {
+        {entries.map((entry, i) => {
           const medal = MEDALS[i] ?? MEDALS[MEDALS.length - 1];
           return (
             <li key={entry.id} className="flex items-center gap-3">
@@ -42,3 +65,4 @@ export function Leaderboard() {
     </section>
   );
 }
+

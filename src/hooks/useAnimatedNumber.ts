@@ -15,15 +15,16 @@ export function useAnimatedNumber(target: number, duration = 700): number {
     const from = valueRef.current;
     if (from === target) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      valueRef.current = target;
-      setValue(target);
-      return;
-    }
+    // Reduced motion → collapse the duration to 0 so the first frame lands exactly
+    // on target. Keeps every setState() inside the rAF callback (no cascading render).
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ms = prefersReduced ? 0 : duration;
 
     const start = performance.now();
     const step = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
+      const t = ms <= 0 ? 1 : Math.min(1, (now - start) / ms);
       const eased = 1 - Math.pow(1 - t, 3);
       const next = from + (target - from) * eased;
       valueRef.current = next;

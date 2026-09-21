@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useWallet } from "@/components/providers/WalletProvider";
 import { ShareCard } from "@/components/ShareCard";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { track } from "@/lib/analytics";
 import { formatINR } from "@/lib/format";
-import { getMockRank } from "@/lib/leaderboard";
+import { getMockRank, submitScore } from "@/lib/leaderboard";
 import { computePersonality } from "@/lib/personality";
 
 /** Damage Report — plan §10 full stat sheet + §29 restart options. */
@@ -24,6 +24,17 @@ export function DamageReport() {
   } = useWallet();
   const personality = computePersonality(spentByCategory, total > 0 ? spent / total : 0);
   const animatedSpent = useAnimatedNumber(spent, 1200);
+  const [name, setName] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [submitMsg, setSubmitMsg] = useState("");
+
+  /** Fresh session ⇒ fresh submit form, handled in the click handler (not an effect). */
+  const restart = (resetFn: () => void) => {
+    setSubmitted(false);
+    setSubmitMsg("");
+    setName("");
+    resetFn();
+  };
 
   useEffect(() => {
     if (showDamage) track("session_completed", { spent, budget: total });
@@ -116,17 +127,60 @@ export function DamageReport() {
             <ShareCard personality={personality} />
           </div>
 
+          {/* Global board submit — anonymous arcade style, Firestore when configured */}
+          <div className="glass mt-6 rounded-3xl p-5 text-left">
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-ink-muted">
+              Global leaderboard
+            </p>
+            {submitted ? (
+              <p className="mt-2 text-sm text-ink-secondary">{submitMsg}</p>
+            ) : (
+              <form
+                className="mt-3 flex gap-2"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const clean = name.trim().slice(0, 24) || "Anonymous";
+                  const ok = await submitScore({ name: clean, city: "India", spent });
+                  setSubmitted(true);
+                  setSubmitMsg(
+                    ok
+                      ? `🔥 ${clean}, you're on the global board!`
+                      : "Board is offline right now — your damage still counts locally. Add Firebase keys to go live."
+                  );
+                }}
+              >
+                <label htmlFor="board-name" className="sr-only">
+                  Your display name for the leaderboard
+                </label>
+                <input
+                  id="board-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name (e.g. Rahul)"
+                  maxLength={24}
+                  className="min-w-0 flex-1 rounded-full border border-line bg-white/5 px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink-muted focus:border-accent"
+                />
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-full bg-accent px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-white hover:bg-accent/90"
+                >
+                  Submit
+                </button>
+              </form>
+            )}
+          </div>
+
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
-              onClick={reset}
+              onClick={() => restart(reset)}
               className="flex-1 rounded-full bg-accent py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-white shadow-[0_0_32px_rgb(124_92_255/0.4)] transition-all duration-300 hover:bg-accent/90"
             >
               Spend again →
             </button>
             <button
               type="button"
-              onClick={restartWithCr}
+              onClick={() => restart(restartWithCr)}
               className="flex-1 rounded-full border border-line-strong py-3.5 text-xs font-bold uppercase tracking-[0.18em] text-ink transition-all duration-300 hover:border-accent hover:text-accent"
             >
               Restart with ₹1Cr

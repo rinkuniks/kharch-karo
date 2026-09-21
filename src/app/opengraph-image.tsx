@@ -44,7 +44,7 @@ export default function OpengraphImage() {
             fontWeight: 600,
           }}
         >
-          INDIA'S VIRTUAL SPENDING PLAYGROUND
+          INDIA&apos;S VIRTUAL SPENDING PLAYGROUND
         </div>
         <div
           style={{

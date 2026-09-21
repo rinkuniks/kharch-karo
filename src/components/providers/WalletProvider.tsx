@@ -20,6 +20,7 @@ export interface Purchase {
   qty: number;
   emoji: string;
   category: Category;
+  image?: string;
 }
 
 interface WalletContextValue {
@@ -68,7 +69,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [quickView, setQuickView] = useState<Product | null>(null);
   const [hydrated, setHydrated] = useState(false);
 
-  /* Local anonymous session — plan §16 (no login, session lives in the browser) */
+  /* Local anonymous session — plan §16 (no login, session lives in the browser).
+     Intentionally an effect: the static export prerenders an empty wallet so
+     hydration matches, then we restore the saved session from localStorage.
+     Reading storage during render would cause a hydration mismatch. */
+  /* eslint-disable react-hooks/set-state-in-effect -- SSR-safe hydration read */
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -87,6 +92,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
     setHydrated(true);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (!hydrated) return;
@@ -158,6 +164,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           qty,
           emoji: product.emoji,
           category: product.category,
+          image: product.image,
         },
       ]);
       setPurchasePulse((n) => n + 1);

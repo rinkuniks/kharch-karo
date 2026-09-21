@@ -1,27 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
+import { ProductImage } from "@/components/ProductImage";
 import { useWallet } from "@/components/providers/WalletProvider";
 import { useToast, isBigPurchase } from "@/components/ui/toast";
 import { track } from "@/lib/analytics";
 import { formatINR } from "@/lib/format";
+import type { Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
 /** Product quick view — design.md §14 split layout + §28 quick view micro-interaction. */
 export function ProductQuickView() {
-  const { quickView, closeQuickView, addToWallet, remaining, total, deniedProductId } =
-    useWallet();
-  const { pushToast } = useToast();
-  const [qty, setQty] = useState(1);
-
-  useEffect(() => {
-    setQty(1);
-  }, [quickView]);
+  const { quickView } = useWallet();
 
   if (!quickView) return null;
 
-  const product = quickView;
+  // Keyed by product id so the quantity stepper resets per product
+  // without a state-syncing effect.
+  return <QuickViewBody key={quickView.id} product={quickView} />;
+}
+
+function QuickViewBody({ product }: { product: Product }) {
+  const { closeQuickView, addToWallet, remaining, total, deniedProductId } = useWallet();
+  const { pushToast } = useToast();
+  const [qty, setQty] = useState(1);
+
   const lineTotal = product.price * qty;
   const affordable = remaining >= lineTotal;
   const denied = deniedProductId === product.id;
@@ -47,15 +51,8 @@ export function ProductQuickView() {
   return (
     <Modal open onClose={closeQuickView} label={`Quick view ${product.name}`}>
       <div className="grid sm:grid-cols-2">
-        <div
-          className="relative flex h-48 items-center justify-center sm:h-full sm:min-h-80"
-          style={{
-            background: `radial-gradient(120% 120% at 50% 10%, ${product.gradient[0]}, ${product.gradient[1]})`,
-          }}
-        >
-          <span aria-hidden className="text-8xl drop-shadow-[0_8px_24px_rgb(0_0_0/0.45)]">
-            {product.emoji}
-          </span>
+        <div className="relative h-56 overflow-hidden sm:h-full sm:min-h-80">
+          <ProductImage product={product} eager className="h-full w-full" />
           <span className="absolute top-4 left-4 rounded-full border border-line-strong bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-secondary">
             {product.category}
           </span>
@@ -76,6 +73,7 @@ export function ProductQuickView() {
             </button>
           </div>
           <p className="mt-1 text-sm text-ink-secondary">{product.tagline}</p>
+          <p className="mt-1 text-[11px] text-ink-muted">{product.credit} · Free to use</p>
           <p className="mt-4 font-display text-3xl font-bold text-accent-secondary tabular-nums">
             {formatINR(product.price)}
           </p>

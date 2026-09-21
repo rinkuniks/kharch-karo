@@ -16,7 +16,10 @@ const STORAGE_KEY = "kharch-karo-theme";
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
 
-  // Load saved theme on mount
+  // Load the saved theme after mount. Intentionally an effect: the static export
+  // prerenders with the default so hydration matches, then we adopt the user's
+  // stored preference. Reading localStorage during render would break hydration.
+  /* eslint-disable react-hooks/set-state-in-effect -- SSR-safe hydration read */
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
     if (saved === "light" || saved === "dark") {
@@ -25,6 +28,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       setTheme("light");
     }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Apply theme to <html> and persist
   useEffect(() => {

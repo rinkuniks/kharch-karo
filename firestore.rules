@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// Kharch Karo — free Spark-plan friendly rules.
+// `scores`: anyone may read the public leaderboard; anyone may append one
+// anonymous score (name/city/spent only). No updates, no deletes, no auth needed.
+// `visits`: append-only anonymous visit rows for the admin dashboard.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function validScore() {
+      return request.resource.data.keys().hasOnly(['name', 'city', 'spent', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 24
+        && request.resource.data.city is string
+        && request.resource.data.city.size() <= 24
+        && request.resource.data.spent is number
+        && request.resource.data.spent >= 0;
+    }
+
+    function validVisit() {
+      return request.resource.data.keys().hasOnly([
+        'country', 'countryCode', 'region', 'city',
+        'lat', 'lon', 'isp', 'timezone', 'timestamp', 'createdAt'
+      ]);
+    }
+
+    match /scores/{scoreId} {
+      allow read: if true;
+      allow create: if validScore();
+      allow update, delete: if false;
+    }
+
+    match /visits/{visitId} {
+      allow read: if true;
+      allow create: if validVisit();
+      allow update, delete: if false;
+    }
+
+    // Everything else stays locked.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

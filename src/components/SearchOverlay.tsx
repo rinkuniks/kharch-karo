@@ -6,15 +6,12 @@ import { useToast, isBigPurchase } from "@/components/ui/toast";
 import { EmptyState } from "@/components/ui/empty-state";
 import { track } from "@/lib/analytics";
 import { formatINR } from "@/lib/format";
-import { PRODUCTS, trendingProducts } from "@/lib/products";
+import { PRODUCTS, trendingProducts, type Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
 /** Full-screen search — design.md §17, plan §36 (Ctrl+K, tags, trending). */
 export function SearchOverlay() {
-  const { searchOpen, setSearchOpen, addToWallet, remaining, total } = useWallet();
-  const { pushToast } = useToast();
-  const [query, setQuery] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { searchOpen, setSearchOpen } = useWallet();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -22,26 +19,34 @@ export function SearchOverlay() {
         e.preventDefault();
         setSearchOpen(!searchOpen);
       }
-      if (e.key === "Escape") setSearchOpen(false);
+      if (e.key === "Escape" && searchOpen) setSearchOpen(false);
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [searchOpen, setSearchOpen]);
 
-  useEffect(() => {
-    if (searchOpen) {
-      setQuery("");
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      const t = setTimeout(() => inputRef.current?.focus(), 50);
-      return () => {
-        document.body.style.overflow = prev;
-        clearTimeout(t);
-      };
-    }
-  }, [searchOpen]);
-
   if (!searchOpen) return null;
+
+  // Remounts on every open, so the query starts empty without a syncing effect.
+  return <SearchBody onClose={() => setSearchOpen(false)} />;
+}
+
+function SearchBody({ onClose }: { onClose: () => void }) {
+  const { addToWallet, remaining, total } = useWallet();
+  const { pushToast } = useToast();
+  const [query, setQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Lock background scroll + focus the field. No state is set synchronously here.
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const t = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => {
+      document.body.style.overflow = prev;
+      clearTimeout(t);
+    };
+  }, []);
 
   const q = query.trim().toLowerCase();
   const results = q
@@ -54,9 +59,7 @@ export function SearchOverlay() {
       )
     : trendingProducts(8);
 
-  const handleAdd = (productId: string) => {
-    const product = PRODUCTS.find((p) => p.id === productId);
-    if (!product) return;
+  const handleAdd = (product: Product) => {
     if (!addToWallet(product)) {
       track("purchase_attempt", { productId: product.id, reason: "insufficient" });
       pushToast({
@@ -85,7 +88,7 @@ export function SearchOverlay() {
       <button
         type="button"
         aria-label="Close search"
-        onClick={() => setSearchOpen(false)}
+        onClick={onClose}
         className="absolute inset-0 cursor-default"
       />
       <div
@@ -143,9 +146,20 @@ export function SearchOverlay() {
                     key={p.id}
                     className="glass flex items-center gap-3 rounded-2xl px-4 py-3"
                   >
-                    <span aria-hidden className="text-2xl">
-                      {p.emoji}
-                    </span>
+                    {p.image ? (
+                      <img
+                        src={p.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        referrerPolicy="no-referrer"
+                        className="h-10 w-10 shrink-0 rounded-xl object-cover"
+                      />
+                    ) : (
+                      <span aria-hidden className="text-2xl">
+                        {p.emoji}
+                      </span>
+                    )}
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold text-ink">
                         {p.name}
@@ -159,7 +173,7 @@ export function SearchOverlay() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => handleAdd(p.id)}
+                      onClick={() => handleAdd(p)}
                       disabled={!affordable}
                       className={cn(
                         "rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.14em] transition-all duration-300",

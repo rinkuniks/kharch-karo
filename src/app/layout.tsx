@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { gaId } from "@/lib/analytics";
 
 /* design.md §4 — Space Grotesk display, Inter body */
 const displayFont = Space_Grotesk({
@@ -55,12 +57,21 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const GA_ID = gaId();
   return (
     <html
       lang="en"
       className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        {GA_ID ? (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+            <Script id="ga-boot" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            </Script>
+          </>
+        ) : null}
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

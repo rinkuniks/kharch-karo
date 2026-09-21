@@ -7,6 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "verify": "node scripts/verify.mts",
+    "smoke": "node scripts/smoke.mjs",
+    "test": "npm run typecheck && npm run lint && npm run verify",
+    "test:all": "npm test && npm run build && npm run smoke",
     "deploy": "next build && firebase deploy --only hosting"
   },
   "dependencies": {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getVisits, getStats, type VisitRecord } from "@/lib/geolocation";
+import { fetchRemoteVisits, getStatsFrom, type VisitRecord } from "@/lib/geolocation";
 
 function FlagEmoji({ code }: { code: string }) {
   const codePoints = code
@@ -24,11 +24,20 @@ function timeAgo(ts: number): string {
 
 export default function AdminPage() {
   const [visits, setVisits] = useState<VisitRecord[]>([]);
-  const [stats, setStats] = useState<ReturnType<typeof getStats> | null>(null);
+  const [stats, setStats] = useState<ReturnType<typeof getStatsFrom> | null>(null);
+  const [live, setLive] = useState(false);
 
   useEffect(() => {
-    setVisits(getVisits());
-    setStats(getStats());
+    let cancelled = false;
+    fetchRemoteVisits(50).then(({ visits: rows, live: isLive }) => {
+      if (cancelled) return;
+      setVisits(rows);
+      setStats(getStatsFrom(rows));
+      setLive(isLive);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (!stats) return <div className="p-8 text-ink">Loading...</div>;
@@ -44,8 +53,12 @@ export default function AdminPage() {
             Visitor Locations
           </h1>
           <p className="mt-1 text-sm text-ink-muted">
-            Tracked via IP geolocation (ipapi.co). Stored locally in your browser.
+            Tracked via IP geolocation (ipapi.co), synced to Firestore when Firebase keys are set —
+            otherwise stored locally in this browser.
           </p>
+          <span className="mt-3 inline-block rounded-full border border-line px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-muted">
+            {live ? "● Live from Firestore" : "Local only"}
+          </span>
         </header>
 
         {/* Country breakdown */}

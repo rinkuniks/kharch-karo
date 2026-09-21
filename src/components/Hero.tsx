@@ -1,11 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { PRODUCTS } from "@/lib/products";
 
 /** Hero — design.md §8: 100svh, left headline / right visual, subtle radial gradients. */
 export function Hero() {
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+  /* Real product photos in the floating orbs — feels like the storefront, not a mock. */
+  const supercar = PRODUCTS.find((p) => p.id === "supercar")!;
+  const island = PRODUCTS.find((p) => p.id === "island-week")!;
+  const phone = PRODUCTS.find((p) => p.id === "flagship-phone")!;
 
   return (
     <section
@@ -72,14 +78,35 @@ export function Hero() {
         >
           <div className="glow-purple absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/25 blur-[100px]" />
 
-          <div className="glass float-slow absolute top-6 left-6 flex h-32 w-32 items-center justify-center rounded-3xl text-5xl" aria-hidden>
-            🏎️
+          <div className="glass float-slow absolute top-6 left-6 h-32 w-32 overflow-hidden rounded-3xl">
+            <img
+              src={supercar.image}
+              alt={supercar.name}
+              loading="eager"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              className="h-full w-full object-cover"
+            />
           </div>
-          <div className="glass float-slower absolute top-20 right-8 flex h-40 w-40 items-center justify-center rounded-3xl text-6xl" aria-hidden>
-            🏝️
+          <div className="glass float-slower absolute top-20 right-8 h-40 w-40 overflow-hidden rounded-3xl">
+            <img
+              src={island.image}
+              alt={island.name}
+              loading="eager"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              className="h-full w-full object-cover"
+            />
           </div>
-          <div className="glass float-slow absolute bottom-16 left-20 flex h-28 w-28 items-center justify-center rounded-3xl text-4xl" style={{ animationDelay: "1.4s" }} aria-hidden>
-            📱
+          <div className="glass float-slow absolute bottom-16 left-20 h-28 w-28 overflow-hidden rounded-3xl" style={{ animationDelay: "1.4s" }}>
+            <img
+              src={phone.image}
+              alt={phone.name}
+              loading="eager"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              className="h-full w-full object-cover"
+            />
           </div>
 
           <div className="glass float-slower absolute right-0 bottom-0 w-56 rounded-3xl p-4">

@@ -47,9 +47,20 @@ export function CartDrawer() {
                 key={p.id}
                 className="group flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 transition-all duration-200 hover:border-line-strong hover:bg-surface-elevated"
               >
-                <span aria-hidden className="text-xl">
-                  {p.emoji}
-                </span>
+                {p.image ? (
+                  <img
+                    src={p.image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    referrerPolicy="no-referrer"
+                    className="h-11 w-11 shrink-0 rounded-xl object-cover"
+                  />
+                ) : (
+                  <span aria-hidden className="text-xl">
+                    {p.emoji}
+                  </span>
+                )}
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-ink">
                     {p.name}
