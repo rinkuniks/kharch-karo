@@ -27,6 +27,12 @@
 .DS_Store
 *.pem
 
+# firebase cli artifacts
+.firebase/
+deploy.txt
+firestore-debug.log
+ui-debug.log
+
 # debug
 npm-debug.log*
 yarn-debug.log*

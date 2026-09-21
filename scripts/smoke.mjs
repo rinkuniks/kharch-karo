@@ -19,6 +19,8 @@ import { chromium } from "playwright";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(root, "out");
 const PORT = 4173;
+/** Optional: `npm run smoke -- https://dopamine-aaf25.web.app` tests the live site instead. */
+const BASE = process.argv[2] ?? `http://localhost:${PORT}`;
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -81,13 +83,15 @@ const server = createServer(async (req, res) => {
 });
 
 async function main() {
-  if (!existsSync(OUT)) {
-    console.error("out/ is missing — run `npm run build` first.");
-    process.exit(1);
+  if (BASE.startsWith("http://localhost")) {
+    if (!existsSync(OUT)) {
+      console.error("out/ is missing — run `npm run build` first.");
+      process.exit(1);
+    }
+    await new Promise((resolve) => server.listen(PORT, resolve));
   }
 
-  await new Promise((resolve) => server.listen(PORT, resolve));
-  console.log(`\nKharch Karo — runtime smoke test (http://localhost:${PORT})\n`);
+  console.log(`\nKharch Karo — runtime smoke test (${BASE})\n`);
 
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
@@ -98,7 +102,12 @@ async function main() {
   });
   page.on("pageerror", (err) => consoleErrors.push(err.message));
 
-  await page.goto(`http://localhost:${PORT}`, { waitUntil: "networkidle" });
+  // networkidle never settles on a live site (GA + Unsplash keep sockets open),
+  // so wait for the DOM and then for the hero to actually render.
+  await page.goto(BASE, { waitUntil: "domcontentloaded", timeout: 60000 });
+  await page
+    .getByRole("heading", { name: /What would you do with/i })
+    .waitFor({ state: "visible", timeout: 45000 });
 
   /* ---------- 1. shell ---------- */
   check(
@@ -182,7 +191,7 @@ async function main() {
   );
 
   await browser.close();
-  server.close();
+  if (BASE.startsWith("http://localhost")) server.close();
 
   console.log(`\n${passed} passed, ${failed} failed\n`);
   if (failed > 0) process.exit(1);
